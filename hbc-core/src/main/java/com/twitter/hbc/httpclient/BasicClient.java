@@ -17,7 +17,6 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.twitter.hbc.RateTracker;
 import com.twitter.hbc.ReconnectionManager;
-import com.twitter.hbc.SitestreamController;
 import com.twitter.hbc.core.Client;
 import com.twitter.hbc.core.Hosts;
 import com.twitter.hbc.core.StatsReporter;
@@ -26,6 +25,7 @@ import com.twitter.hbc.core.event.Event;
 import com.twitter.hbc.core.processor.HosebirdMessageProcessor;
 import com.twitter.hbc.httpclient.auth.Authentication;
 import org.apache.http.client.HttpClient;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.params.HttpParams;
@@ -54,13 +54,13 @@ public class BasicClient implements Client {
 
   public BasicClient(String name, Hosts hosts, StreamingEndpoint endpoint, Authentication auth, boolean enableGZip, HosebirdMessageProcessor processor,
                      ReconnectionManager reconnectionManager, RateTracker rateTracker, ExecutorService executorService,
-                     @Nullable BlockingQueue<Event> eventsQueue, HttpParams params) {
+                     @Nullable BlockingQueue<Event> eventsQueue, HttpParams params, SchemeRegistry schemeRegistry) {
     Preconditions.checkNotNull(auth);
     HttpClient client;
     if (enableGZip) {
-      client = new RestartableHttpClient(auth, enableGZip, params);
+      client = new RestartableHttpClient(auth, enableGZip, params, schemeRegistry);
     } else {
-      DefaultHttpClient defaultClient = new DefaultHttpClient(new PoolingClientConnectionManager(), params);
+      DefaultHttpClient defaultClient = new DefaultHttpClient(new PoolingClientConnectionManager(schemeRegistry), params);
 
       /** Set auth **/
       auth.setupConnection(defaultClient);
@@ -93,11 +93,6 @@ public class BasicClient implements Client {
     }
     executorService.execute(clientBase);
     logger.info("New connection executed: {}", this.clientBase);
-  }
-
-  @Override
-  public SitestreamController createSitestreamController() {
-    return clientBase.getSitestreamController();
   }
 
   @Override

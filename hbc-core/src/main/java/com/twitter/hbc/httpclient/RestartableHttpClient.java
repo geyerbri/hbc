@@ -21,6 +21,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DecompressingHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
@@ -40,17 +41,19 @@ public class RestartableHttpClient implements HttpClient {
   private final Authentication auth;
   private final HttpParams params;
   private final boolean enableGZip;
+  private final SchemeRegistry schemeRegistry;
 
-  public RestartableHttpClient(Authentication auth, boolean enableGZip, HttpParams params) {
+  public RestartableHttpClient(Authentication auth, boolean enableGZip, HttpParams params, SchemeRegistry schemeRegistry) {
     this.auth = Preconditions.checkNotNull(auth);
     this.enableGZip = enableGZip;
     this.params = Preconditions.checkNotNull(params);
+    this.schemeRegistry = Preconditions.checkNotNull(schemeRegistry);
 
     this.underlying = new AtomicReference<HttpClient>();
   }
 
   public void setup() {
-    DefaultHttpClient defaultClient = new DefaultHttpClient(new PoolingClientConnectionManager(), params);
+    DefaultHttpClient defaultClient = new DefaultHttpClient(new PoolingClientConnectionManager(schemeRegistry), params);
 
     auth.setupConnection(defaultClient);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Twitter, Inc.
+ * Copyright 2014 Twitter, Inc.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -11,12 +11,16 @@
  * limitations under the License.
  **/
 
-package com.twitter.hbc.twitter4j;
+package com.twitter.hbc.core.endpoint;
 
 
-import com.twitter.hbc.core.Client;
-import com.twitter.hbc.core.Client;
+public class RealTimeEnterpriseStreamingEndpoint extends EnterpriseStreamingEndpoint {
 
-public interface Twitter4jClient extends Client {
-  public void process();
+  public RealTimeEnterpriseStreamingEndpoint(String account, String product, String label) {
+    super(account, product, label);
+  }
+
+  public RealTimeEnterpriseStreamingEndpoint(String account, String product, String label, int clientId) {
+    super(account, product, label, clientId);
+  }
 }

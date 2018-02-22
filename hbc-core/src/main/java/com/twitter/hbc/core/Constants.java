@@ -21,7 +21,15 @@ public class Constants {
 
   public static final String CURRENT_API_VERSION = "1.1";
 
+  /**
+   * Max backoff, in milliseconds.
+   */
   public static final int MAX_BACKOFF_COUNT = 150000;
+
+  /**
+   * Min backoff, in milliseconds.
+   */
+  public static final int MIN_BACKOFF_MILLIS = 250;
 
   public static final int NUM_FIREHOSE_PARTITIONS = 16;
 
@@ -58,6 +66,10 @@ public class Constants {
   public static final String STREAM_HOST = "https://stream.twitter.com";
   public static final String SITESTREAM_HOST = "https://sitestream.twitter.com";
   public static final String USERSTREAM_HOST = "https://userstream.twitter.com";
+
+  public static final String ENTERPRISE_STREAM_HOST = "https://stream.gnip.com";
+  public static final String FROM_DATE_PARAM = "fromDate";
+  public static final String TO_DATE_PARAM = "toDate";
 
   public static final Charset DEFAULT_CHARSET = Charsets.UTF_8;
 
